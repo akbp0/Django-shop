@@ -83,13 +83,13 @@ class UserLoginView(View):
     def setup(self, request, *args, **kwargs):
         self.next = request.GET.get("next")
         return super().setup(request, *args, **kwargs)
-
+ 
     def get(self, request):
         form = self.form_class
         return render(request, self.temp_page, context={"form": form})
 
     def post(self, request):
-        form = request.POST
+        form = self.form_class(request.POST)
 
         if form.is_valid():
             cd = form.cleaned_data

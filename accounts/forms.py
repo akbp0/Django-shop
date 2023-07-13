@@ -99,7 +99,7 @@ class VerifyForm(forms.Form):
 
 class LoginForm(forms.Form):
     phone_number = forms.CharField(
-        label="password", widget=forms.TextInput(
+        label="phone_number", widget=forms.TextInput(
             attrs={'class': 'form-control'}
         ))
     password = forms.CharField(
