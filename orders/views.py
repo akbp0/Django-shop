@@ -7,7 +7,7 @@ from .forms import CartAddForm, CouponForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Order, OrderItem, Coupon
 import datetime
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from djangoProject__a import settings
 import json
 import requests
@@ -66,11 +66,9 @@ class CouponApplyView(LoginRequiredMixin, View):
         if form.is_valid():
             code = form.cleaned_data['code']
             try:
-                coupon = Coupon.objects.get(
-                    code__exact=code, valid_from__lte=now, valid_to__gte=now, active=True)
+                coupon = Coupon.objects.get(code__exact=code, valid_from__lte=now, valid_to__gte=now, active=True)
             except Coupon.DoesNotExist:
-                messages.error(
-                    request, 'this coupon does not exists', 'danger')
+                messages.error(request, 'this coupon does not exists', 'danger')
                 return redirect('orders:order_detail', order_id)
             order = Order.objects.get(id=order_id)
             order.discount = coupon.discount
@@ -78,18 +76,16 @@ class CouponApplyView(LoginRequiredMixin, View):
             messages.error(request, 'it worked', 'success')
         return redirect('orders:order_detail', order_id)
 
-
 if settings.SANDBOX:
     sandbox = 'sandbox'
 else:
     sandbox = 'www'
-
+    
 ZP_API_REQUEST = f"https://{sandbox}.zarinpal.com/pg/rest/WebGate/PaymentRequest.json"
 ZP_API_VERIFY = f"https://{sandbox}.zarinpal.com/pg/rest/WebGate/PaymentVerification.json"
 ZP_API_STARTPAY = f"https://{sandbox}.zarinpal.com/pg/StartPay/"
 description = "توضیحات مربوط به تراکنش را در این قسمت وارد کنید"
-CallbackURL = reverse('orders:order_verify')
-
+CallbackURL = reverse_lazy('orders:order_verify')
 
 class OrderPayView(LoginRequiredMixin, View):
     def get(request, order_id):
