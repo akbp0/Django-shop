@@ -88,9 +88,9 @@ description = "توضیحات مربوط به تراکنش را در این قس
 CallbackURL = reverse_lazy('orders:order_verify')
 
 class OrderPayView(LoginRequiredMixin, View):
-    def get(request, order_id):
-        order = Order.objects.get(id=order_id)
-        request.session['order'] = {'order_id': order_id}
+    def get(self, request, *args, **kwargs):
+        order = Order.objects.get(pk=kwargs['order_id'])
+        request.session['order'] = {'order_id': kwargs['order_id']}
         data = {
             "MerchantID": settings.MERCHANT,
             "Amount": order.get_total_price(),
@@ -119,7 +119,7 @@ class OrderPayView(LoginRequiredMixin, View):
 
 
 class OrderVerifyView(LoginRequiredMixin, View):
-    def get(request, authority):
+    def get(self, request, authority):
         order_id = request.session['order_pay']['order_id']
         order = Order.objects.get(id=order_id)
         data = {
