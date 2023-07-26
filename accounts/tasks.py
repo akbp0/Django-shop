@@ -1,7 +1,8 @@
+from celery import shared_task
 from django.contrib.auth.mixins import UserPassesTestMixin
 from kavenegar import *
 
-
+@shared_task
 def send_otp_code(phone_number, code):
 	try:
 		api = KavenegarAPI('place your kavenegar api key here')
@@ -18,6 +19,3 @@ def send_otp_code(phone_number, code):
 		print(e)
 
 
-class IsAdminUserMixin(UserPassesTestMixin):
-	def test_func(self):
-		return self.request.user.is_authenticated and self.request.user.is_admin
