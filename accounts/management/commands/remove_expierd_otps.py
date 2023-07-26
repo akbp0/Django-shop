@@ -8,5 +8,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         expired_time = datetime.now()-timedelta(minutes=2)
-        OtpModel.objects.filter(created__lt=expired_time).delete()
-        self.stdout.write('they are successfully deleted')
+        otps = OtpModel.objects.filter(created__lt=expired_time)
+        count =  otps.count()
+        otps.delete()
+        self.stdout.write(f'{count} codes successfully deleted')
